@@ -13,6 +13,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 
 /* INIT causes externals in crobots.h to have storage, & init intrinsic table */
 #define INIT 1 
@@ -51,7 +52,7 @@ char *argv[];
   long time();
   long atol();
   long cur_time;
-  int srand();
+  /* int srand(); */ /* MarisaG */
 
 
   /* print version, copyright notice, GPL notice */
@@ -614,7 +615,7 @@ char *f;
 
   cur_robot = &robots[0];
 
-  fprintf("\n\nReady to debug, use `d' to dump robot info, `q' to quit.\n\n");
+  printf("\n\nReady to debug, use `d' to dump robot info, `q' to quit.\n\n");
 
   while (c) {  
     cycle();

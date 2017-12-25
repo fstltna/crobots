@@ -10,7 +10,7 @@ DOSA = main.c grammar.c lexanal.c compiler.c cpu.c intrins.c display.c screena.c
 
 # Xenix cc flags: optimize(O), omit stack checking(K), separate text and data(i)
 
-CFLAGS = -O -K -i -DUNIX
+CFLAGS = -O -DUNIX
 LIBS = -lm -lcurses -ltermlib
 
 # note - grammar.c and lexanal.c: both yacc (grammar.y) and lex (lexanal.l)
@@ -21,41 +21,43 @@ LIBS = -lm -lcurses -ltermlib
 #  confused when '#ifdef symbol .... #endif' are nested.
 
 crobots: 	$(OBJS)
-		cc -s $(CFLAGS) $(OBJS) -o crobots $(LIBS)
+		gcc -s $(CFLAGS) $(OBJS) -o crobots $(LIBS)
 
 main.o: 	crobots.h main.c
-		cc $(CFLAGS) -c main.c
+		gcc $(CFLAGS) -c main.c
 
 grammar.o: 	crobots.h compiler.h grammar.y
 		yacc -d grammar.y
-		egrep -v '# line|^#$$' y.tab.c >grammar.c
-		rm y.tab.c
+		#egrep -v '# line|^#$$' y.tab.c >grammar.c
+		#rm y.tab.c
+		mv y.tab.c grammar.c
 		mv y.tab.h tokens.h
-		cc $(CFLAGS) -c grammar.c
+		gcc $(CFLAGS) -c grammar.c
 
 lexanal.o: 	crobots.h compiler.h lexanal.l grammar.y
 		lex lexanal.l
-		egrep -v '# ifdef|# endif' lex.yy.c >lexanal.c
-		rm lex.yy.c
-		cc $(CFLAGS) -c lexanal.c
+		#egrep -v '# ifdef|# endif' lex.yy.c >lexanal.c
+		#rm lex.yy.c
+		mv lex.yy.c lexanal.c
+		gcc $(CFLAGS) -c lexanal.c
 
 compiler.o: 	crobots.h compiler.h tokens.h compiler.c
-		cc $(CFLAGS) -c compiler.c
+		gcc $(CFLAGS) -c compiler.c
 	
 cpu.o: 		crobots.h grammar.y cpu.c
-		cc $(CFLAGS) -c cpu.c
+		gcc $(CFLAGS) -c cpu.c
 	
 intrins.o:	crobots.h intrins.c
-		cc $(CFLAGS) -c intrins.c
+		gcc $(CFLAGS) -c intrins.c
 	
 display.o:	crobots.h display.c
-		cc $(CFLAGS) -c display.c
+		gcc $(CFLAGS) -c display.c
 	
 screen.o:	crobots.h screen.c
-		cc $(CFLAGS) -c screen.c
+		gcc $(CFLAGS) -c screen.c
 	
 motion.o:	crobots.h motion.c
-		cc $(CFLAGS) -c motion.c
+		gcc $(CFLAGS) -c motion.c
 	
 dos:
 		cc -s -dos -K -i -O -DDOS $(DOS) -o crobotsx.exe -lm
@@ -70,4 +72,7 @@ print:
 lint:
 		lint -abc *.c | tee crobots.lint
 		@echo 'lint output kept in crobots.lint'
+
+clean:
+		rm *.o
 
