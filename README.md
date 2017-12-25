@@ -3,7 +3,7 @@ CROBOTSdoor
 
 This is a fork of CROBOTS that is targeted as a door for Linux BBS's. Yes
 they still exist. If you have issues or need help go to
-[https://SynchronetBBS.org] and post it there.
+https://SynchronetBBS.org and post it there.
 
 Visit the CROBOTS web pages at [http://tpoindex.github.io/crobots/](http://tpoindex.github.io/crobots/)
 
