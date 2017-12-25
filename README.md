@@ -1,4 +1,4 @@
-CROBOTSdoor
+CROBOTS-door version
 =======
 
 This is a fork of CROBOTS that is targeted as a door for Linux BBS's. Yes
