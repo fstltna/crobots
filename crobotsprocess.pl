@@ -89,7 +89,9 @@ sub ProcessData
 	#print "'$numbattles{$digest}'\n";
 	if ($player{$digest} ne "")
 	{
-		print("Already added $digest - skipping\n");
+		print("Already added $digest - adding to counts\n");
+		$numbattles{$digest} += $NumBattles;
+		$numwins{$digest} += $NumWins;
 	}
 	else
 	{
