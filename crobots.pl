@@ -13,6 +13,7 @@ my $StatsFileOutput = "/tmp/foo";
 ###################################################
 
 my $CR_ver = "1.0";
+my $Record = "false";	# Are results saved?
 
 my $d = new UI::Dialog ( backtitle => "CRobots Version v$CR_ver", height => 20, width => 65, listheight => 5,
 	order => [ 'ascii', 'cdialog', 'xdialog' ]);
@@ -61,6 +62,18 @@ sub DebugBot
 
 sub BattleArena
 {
+	my $Mode = shift;
+	if ($Mode eq "Battle")
+	{
+$d->msgbox( title => "Chose battle mode", text => "battle on" );
+		$Record = "true";
+	}
+	else
+	{
+$d->msgbox( title => "Chose practice mode", text => "testing on" );
+		$Record = "false";
+	}
+
 }
 
 sub BattleStats
