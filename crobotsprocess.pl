@@ -4,10 +4,10 @@ use strict;
 use Storable;           # For loading & saving variables
 use Digest::MD5::File qw(dir_md5_hex file_md5_hex url_md5_hex);
 use Date::Parse;
-#use DBI;
 
 my $StatsFileOutput = "/tmp/foo";
-my $StatsDatabaseFile = "/tmp/foo.db";
+my $StatsDatabaseFile = "/tmp/foo";
+my $MD5StatsDatabaseFile = "/tmp/foomd5.db";
 
 ###################################################
 # No changes below here
@@ -17,7 +17,6 @@ my $CR_ver = "1.0";
 my $TempDir = "/tmp";
 my $SawNew = 0;
 my @NewFiles = ();
-my @SeenMD5 = ();	# ZZZ
 my $CurFile = "";
 my $Player = "";
 my $BotName = "";
@@ -25,11 +24,15 @@ my $BotVersion = "";
 my $GameDate = "";
 my $NumWins = 0;
 my $NumBattles = 0;
-my @DataStore = ([],[]);
+my @SeenMD5 = ();
+my %player;
+my %botname;
+my %botversion;
+my %gamedate;
+my %numwins;
+my %numbattles;
 
 print "crobotsprocess utility version $CR_ver\n";
-
-#my $dbh = DBI->connect("dbi:SQLite:dbname=$StatsDatabaseFile","","");
 
 sub ProcessData
 {
@@ -76,35 +79,105 @@ sub ProcessData
 		}
 	}
 print "'$digest'\n";	# ZZZ
-print "$DataStore[$digest]\n";
-print "'$DataStore[$digest][\"digest\"]'\n";
-	if ($DataStore[$digest]["digest"] eq $digest)
+print "'$player{$digest}'\n";
+print "'$botname{$digest}'\n";
+print "'$botversion{$digest}'\n";
+print "'$gamedate{$digest}'\n";
+print "'$numwins{$digest}'\n";
+print "'$numbattles{$digest}'\n";
+	if ($player{$digest} ne "")
 	{
-		print("Already added $_ - skipping\n");
+		print("Already added $digest - skipping\n");
 	}
 	else
 	{
-		print("File $_ not seen, adding to hash\n");
-		$DataStore[$digest]["digest"] = $digest;
-		$DataStore[$digest]["player"] = $Player;
-		$DataStore[$digest]["botname"] = $BotName;
-		$DataStore[$digest]["botversion"] = $BotVersion;
-		$DataStore[$digest]["gamedate"] = $GameDate;
+		print("File $digest not seen, adding to hash\n");
+		$player{$digest} = $Player;
+		$botname{$digest} = $BotName;
+		$botversion{$digest} = $BotVersion;
+		$gamedate{$digest} = $GameDate;
+		$numwins{$digest} = $NumWins;
+		$numbattles{$digest} = $NumBattles;
 		push(@SeenMD5, $digest);
 	} 
 	close($input_fh);
 }
 
-# Load in a data hash
-if (-f $StatsDatabaseFile)
+# Load in player data hash
+if (-f "$StatsDatabaseFile.player")
 {
-	@DataStore = @{retrieve($StatsDatabaseFile)};
-        print("Read in $StatsDatabaseFile\n");
+	%player = %{retrieve("$StatsDatabaseFile.player")};
+        print("Read in $StatsDatabaseFile.player\n");
 }
 else
 {
-        print("$StatsDatabaseFile not found\n");
-        @DataStore = (["foo"], ["bar"]);
+        print("\"$StatsDatabaseFile.player\" not found\n");
+}
+
+# Load in botname data hash
+if (-f "$StatsDatabaseFile.botname")
+{
+	%botname = %{retrieve("$StatsDatabaseFile.botname")};
+        print("Read in $StatsDatabaseFile.botname\n");
+}
+else
+{
+        print("\"$StatsDatabaseFile.botname\" not found\n");
+}
+
+# Load in botversion data hash
+if (-f "$StatsDatabaseFile.botversion")
+{
+	%botversion = %{retrieve("$StatsDatabaseFile.botversion")};
+        print("Read in $StatsDatabaseFile.botversion\n");
+}
+else
+{
+        print("\"$StatsDatabaseFile.botversion\" not found\n");
+}
+
+# Load in gamedate data hash
+if (-f "$StatsDatabaseFile.gamedate")
+{
+	%gamedate = %{retrieve("$StatsDatabaseFile.gamedate")};
+        print("Read in $StatsDatabaseFile.gamedate\n");
+}
+else
+{
+        print("\"$StatsDatabaseFile.gamedate\" not found\n");
+}
+
+# Load in numwins data hash
+if (-f "$StatsDatabaseFile.numwins")
+{
+	%numwins = %{retrieve("$StatsDatabaseFile.numwins")};
+        print("Read in $StatsDatabaseFile.numwins\n");
+}
+else
+{
+        print("\"$StatsDatabaseFile.numwins\" not found\n");
+}
+
+# Load in numbattles data hash
+if (-f "$StatsDatabaseFile.numbattles")
+{
+	%numbattles = %{retrieve("$StatsDatabaseFile.numbattles")};
+        print("Read in $StatsDatabaseFile.numbattles\n");
+}
+else
+{
+        print("\"$StatsDatabaseFile.numbattles\" not found\n");
+}
+
+# Load in a data hash
+if (-f $MD5StatsDatabaseFile)
+{
+	@SeenMD5 = @{retrieve($MD5StatsDatabaseFile)};
+        print("Read in $MD5StatsDatabaseFile\n");
+}
+else
+{
+        print("$MD5StatsDatabaseFile not found\n");
 }
 
 # Look for files waiting to be processed
@@ -138,8 +211,14 @@ foreach $CurFile (@NewFiles)
 }
 
 # Save seen file hash
-store (\@DataStore, $StatsDatabaseFile);
-print("Saved seen file hash to $StatsDatabaseFile\n");
+store (\%player, "$StatsDatabaseFile.player");
+store (\%botname, "$StatsDatabaseFile.botname");
+store (\%botversion, "$StatsDatabaseFile.botversion");
+store (\%gamedate, "$StatsDatabaseFile.gamedate");
+store (\%numwins, "$StatsDatabaseFile.numwins");
+store (\%numbattles, "$StatsDatabaseFile.numbattles");
+store (\@SeenMD5, $MD5StatsDatabaseFile);
+print("Saved file hash\n");
 
 # Create the top info
 
