@@ -31,7 +31,7 @@ whose mission is to seek out, track, and destroy other robots,
 each running different programs.  Each robot is equally equipped,
 and up to four robots may compete at once.  CROBOTS is best
 played among several people, each refining their own robot
-program, then matching program against program."; # ZZZ
+program, then matching program against program.";
 
 $d->msgbox( title => $windowtitle, text => $introtext );
 
@@ -65,15 +65,52 @@ sub BattleArena
 	my $Mode = shift;
 	if ($Mode eq "Battle")
 	{
-$d->msgbox( title => "Chose battle mode", text => "battle on" );
+		#$d->msgbox( title => "Chose battle mode", text => "battle on" );
 		$Record = "true";
 	}
 	else
 	{
-$d->msgbox( title => "Chose practice mode", text => "testing on" );
+		#$d->msgbox( title => "Chose practice mode", text => "testing on" );
 		$Record = "false";
 	}
+	my @selection1 = $d->checklist( title => "Select Testing Robots", text => 'Select up to 3: (If you choose more than 3 only first 3 will be used)',
+                                 list => [ '1', [ 'counter.r', 0 ],
+                                           '2', [ 'rabbit.r', 0 ],
+                                           '3', [ 'rook.r', 1 ],
+                                           '4', [ 'sniper.r', 1 ],
+                                           '5', [ 'target.r', 1 ] ]
+                               );
 
+	my @ActiveRobots = ();
+	my $AddedBots = 0;
+	foreach my $CurBot (@selection1)
+	{
+		if ($AddedBots < 3)
+		{
+			if ($CurBot == 1)
+			{
+				push (@ActiveRobots, "counter.r");
+			}
+			elsif ($CurBot == 2)
+			{
+				push (@ActiveRobots, "rabbit.r");
+			}
+			elsif ($CurBot == 3)
+			{
+				push (@ActiveRobots, "rook.r");
+			}
+			elsif ($CurBot == 4)
+			{
+				push (@ActiveRobots, "sniper.r");
+			}
+			elsif ($CurBot == 5)
+			{
+				push (@ActiveRobots, "target.r");
+			}
+			$AddedBots++;
+		}
+	}
+	$d->msgbox( title => "You have selected these robots:", text => "@ActiveRobots" ); # ZZZ
 }
 
 sub BattleStats
