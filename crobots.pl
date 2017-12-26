@@ -110,7 +110,14 @@ sub BattleArena
 			$AddedBots++;
 		}
 	}
-	$d->msgbox( title => "You have selected these robots:", text => "@ActiveRobots" ); # ZZZ
+	if ($AddedBots > 0)
+	{
+		$d->msgbox( title => "You have selected these robots:", text => "@ActiveRobots" ); # ZZZ
+	}
+	else
+	{
+		$d->msgbox( title => "You have selected these robots:", text => "No Robots Selected" ); # ZZZ
+	}
 }
 
 sub BattleStats
