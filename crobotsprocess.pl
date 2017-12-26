@@ -4,9 +4,9 @@ use strict;
 use Storable;           # For loading & saving variables
 use Digest::MD5::File qw(dir_md5_hex file_md5_hex url_md5_hex);
 
-my $StatsFileOutput = "/tmp/foo";
-my $StatsDatabaseFile = "/tmp/foo";
-my $MD5StatsDatabaseFile = "/tmp/foomd5.db";
+my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
+my $StatsDatabaseFile = "/sbbs/doors/crobots/data";
+my $MD5StatsDatabaseFile = "/sbbs/doors/crobots/md5.db";
 
 ###################################################
 # No changes below here

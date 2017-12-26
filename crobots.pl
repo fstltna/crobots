@@ -6,7 +6,7 @@ use UI::Dialog;
 use Term::ReadKey;
 use Term::ANSIScreen qw(cls);
 
-my $StatsFileOutput = "/tmp/foo";
+my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
 
 ###################################################
 # No changes below here
