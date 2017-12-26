@@ -1,5 +1,7 @@
 # makefile for crobots
 
+TARGET_DIR = /sbbs/doors/crobots
+
 OBJS =  main.o grammar.o lexanal.o compiler.o cpu.o intrins.o display.o screen.o motion.o
 
 SOURCES = crobots.h compiler.h tokens.h main.c grammar.y grammar.c lexanal.l lexanal.c compiler.c cpu.c intrins.c display.c screen.c screend.c motion.c 
@@ -76,3 +78,8 @@ lint:
 clean:
 		rm *.o
 
+install:	crobots
+	mkdir -p $(TARGET_DIR)
+	cp crobots ../crobots.pl ../crobotsprocess.pl $(TARGET_DIR)
+	mkdir -p $(TARGET_DIR)/robots
+	mkdir -p $(TARGET_DIR)/robots/builtin
