@@ -161,7 +161,7 @@ if (-f $MD5StatsDatabaseFile)
 opendir(my $dh, $TempDir) || die "Can't open $TempDir: $!";
 while (readdir $dh)
 {
-	if (substr($_, 0, 7) eq "crobots")
+	if (substr($_, 0, 8) eq "crobots-")
 	{
 		$SawNew++;
 		push (@NewFiles, "$TempDir/$_");
@@ -183,8 +183,7 @@ foreach $CurFile (@NewFiles)
 	# Process this file
 	ProcessData($CurFile);
 	# All done, delete the temp file
-	print "unlink($CurFile)\n";
-	#unlink($CurFile);
+	unlink($CurFile);
 }
 
 # Save seen file hash
