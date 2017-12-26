@@ -92,6 +92,7 @@ sub ProcessData
 		print("Already added $digest - adding to counts\n");
 		$numbattles{$digest} += $NumBattles;
 		$numwins{$digest} += $NumWins;
+		$gamedate{$digest} = $GameDate;
 	}
 	else
 	{
