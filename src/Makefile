@@ -78,8 +78,10 @@ lint:
 clean:
 		rm *.o
 
-install:	crobots
-	mkdir -p $(TARGET_DIR)
-	cp crobots ../crobots.pl ../crobotsprocess.pl $(TARGET_DIR)
-	mkdir -p $(TARGET_DIR)/robots
+install:
 	mkdir -p $(TARGET_DIR)/robots/builtin
+	mkdir -p $(TARGET_DIR)/robots/users
+	#cp crobots $(TARGET_DIR)
+	cp ../crobots.pl ../crobotsprocess.pl $(TARGET_DIR)
+	cp *.r $(TARGET_DIR)/robots/builtin
+
