@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use Storable;           # For loading & saving variables
 use Digest::MD5::File qw(dir_md5_hex file_md5_hex url_md5_hex);
-use Date::Parse;
 
 my $StatsFileOutput = "/tmp/foo";
 my $StatsDatabaseFile = "/tmp/foo";
@@ -31,6 +30,9 @@ my %botversion;
 my %gamedate;
 my %numwins;
 my %numbattles;
+
+# Summary variables
+my $NumPlayers = 0;
 
 print "crobotsprocess utility version $CR_ver\n";
 
@@ -78,13 +80,13 @@ sub ProcessData
 			print "*** Saw unknown field '$field'\n";
 		}
 	}
-print "'$digest'\n";	# ZZZ
-print "'$player{$digest}'\n";
-print "'$botname{$digest}'\n";
-print "'$botversion{$digest}'\n";
-print "'$gamedate{$digest}'\n";
-print "'$numwins{$digest}'\n";
-print "'$numbattles{$digest}'\n";
+	#print "'$digest'\n";
+	#print "'$player{$digest}'\n";
+	#print "'$botname{$digest}'\n";
+	#print "'$botversion{$digest}'\n";
+	#print "'$gamedate{$digest}'\n";
+	#print "'$numwins{$digest}'\n";
+	#print "'$numbattles{$digest}'\n";
 	if ($player{$digest} ne "")
 	{
 		print("Already added $digest - skipping\n");
@@ -107,77 +109,49 @@ print "'$numbattles{$digest}'\n";
 if (-f "$StatsDatabaseFile.player")
 {
 	%player = %{retrieve("$StatsDatabaseFile.player")};
-        print("Read in $StatsDatabaseFile.player\n");
-}
-else
-{
-        print("\"$StatsDatabaseFile.player\" not found\n");
+        #print("Read in $StatsDatabaseFile.player\n");
 }
 
 # Load in botname data hash
 if (-f "$StatsDatabaseFile.botname")
 {
 	%botname = %{retrieve("$StatsDatabaseFile.botname")};
-        print("Read in $StatsDatabaseFile.botname\n");
-}
-else
-{
-        print("\"$StatsDatabaseFile.botname\" not found\n");
+        #print("Read in $StatsDatabaseFile.botname\n");
 }
 
 # Load in botversion data hash
 if (-f "$StatsDatabaseFile.botversion")
 {
 	%botversion = %{retrieve("$StatsDatabaseFile.botversion")};
-        print("Read in $StatsDatabaseFile.botversion\n");
-}
-else
-{
-        print("\"$StatsDatabaseFile.botversion\" not found\n");
+        # print("Read in $StatsDatabaseFile.botversion\n");
 }
 
 # Load in gamedate data hash
 if (-f "$StatsDatabaseFile.gamedate")
 {
 	%gamedate = %{retrieve("$StatsDatabaseFile.gamedate")};
-        print("Read in $StatsDatabaseFile.gamedate\n");
-}
-else
-{
-        print("\"$StatsDatabaseFile.gamedate\" not found\n");
+        #print("Read in $StatsDatabaseFile.gamedate\n");
 }
 
 # Load in numwins data hash
 if (-f "$StatsDatabaseFile.numwins")
 {
 	%numwins = %{retrieve("$StatsDatabaseFile.numwins")};
-        print("Read in $StatsDatabaseFile.numwins\n");
-}
-else
-{
-        print("\"$StatsDatabaseFile.numwins\" not found\n");
+        #print("Read in $StatsDatabaseFile.numwins\n");
 }
 
 # Load in numbattles data hash
 if (-f "$StatsDatabaseFile.numbattles")
 {
 	%numbattles = %{retrieve("$StatsDatabaseFile.numbattles")};
-        print("Read in $StatsDatabaseFile.numbattles\n");
-}
-else
-{
-        print("\"$StatsDatabaseFile.numbattles\" not found\n");
+        #print("Read in $StatsDatabaseFile.numbattles\n");
 }
 
 # Load in a data hash
 if (-f $MD5StatsDatabaseFile)
 {
 	@SeenMD5 = @{retrieve($MD5StatsDatabaseFile)};
-        print("Read in $MD5StatsDatabaseFile\n");
-}
-else
-{
-        print("$MD5StatsDatabaseFile not found\n");
+        #print("Read in $MD5StatsDatabaseFile\n");
 }
 
 # Look for files waiting to be processed
@@ -218,20 +192,43 @@ store (\%gamedate, "$StatsDatabaseFile.gamedate");
 store (\%numwins, "$StatsDatabaseFile.numwins");
 store (\%numbattles, "$StatsDatabaseFile.numbattles");
 store (\@SeenMD5, $MD5StatsDatabaseFile);
-print("Saved file hash\n");
+#print("Saved file hash\n");
 
-# Create the top info
+# Create the top info ZZZ
 
-
+# First get number of unique users
+my %seenplayer;
+my $NumBots = 0;
+foreach my $curkey (keys %player)
+{
+	$NumBots++;
+	if ($seenplayer{$player{$curkey}} eq "")
+	{
+		print "Saw player $player{$curkey}\n";
+		$seenplayer{$player{$curkey}} = "true";
+		$NumPlayers++;
+	}
+}
 
 # Now create output files
+(my $sec,my $min,my $hour,my $mday,my $mon,my $year,my $wday,my $yday,my $isdst) = localtime(time);
+my $now = sprintf("%02d-%02d-%04d %02d:%02d:%02d", $mon, $mday, $year+1900, $hour, $min, $sec);
+
 open(my $output_fh, ">", $StatsFileOutput ) || die "Can't write to $StatsFileOutput: $!";
 printf $output_fh <<"EOT";
-    Welcome to the MCG Carpark.
+              Welcome to the CRobots competition server
 
-    There are currently $Player parking spaces available.
-    Please drive up to booth and collect a ticket.
+       There are currently $NumPlayers players and $NumBots robots in total.
+          This data was last updated at $now.
+
 EOT
-close($output_fh);
 
+printf($output_fh "%-15s | %-15s | Vers | Wins | Battles | Game Date\n========================================================================\n", "Player", "Bot Name");
+
+foreach my $sortkey (sort {$gamedate{$a} <=> $gamedate{$b}} keys %gamedate)
+{
+	my $formatdate = sprintf("%02d/%02d/%04d", substr($gamedate{$sortkey}, 4, 2), substr($gamedate{$sortkey}, 6, 2), substr($gamedate{$sortkey}, 0, 4));
+	printf($output_fh "%-15s | %-15s | %-4s | %-4s | %-7s | %s\n", $player{$sortkey}, $botname{$sortkey}, , $botversion{$sortkey}, $numwins{$sortkey}, , $numbattles{$sortkey}, $formatdate);
+}
+close($output_fh);
 exit 0;
