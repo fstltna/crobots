@@ -14,6 +14,13 @@ my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
 
 my $CR_ver = "1.0";
 my $Record = "false";	# Are results saved?
+my $UserName = $ARGV[0];
+if (!$UserName)
+{
+	print "You must supply the username!\n";
+	exit 0;
+}
+
 
 my $d = new UI::Dialog ( backtitle => "CRobots Version v$CR_ver", height => 20, width => 65, listheight => 5,
 	order => [ 'ascii', 'cdialog', 'xdialog' ]);
