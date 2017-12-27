@@ -14,6 +14,8 @@ my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
 
 my $CR_ver = "1.0";
 my $Record = "false";	# Are results saved?
+
+# Set UserName from command line
 my $UserName = $ARGV[0];
 if (!$UserName)
 {
@@ -21,6 +23,8 @@ if (!$UserName)
 	exit 0;
 }
 
+# Create the users dir if non existing
+system("mkdir -p /sbbs/doors/crobots/robots/users/$UserName");
 
 my $d = new UI::Dialog ( backtitle => "CRobots Version v$CR_ver", height => 20, width => 65, listheight => 5,
 	order => [ 'ascii', 'cdialog', 'xdialog' ]);
@@ -125,6 +129,8 @@ sub BattleArena
 	{
 		$d->msgbox( title => "You have selected these robots:", text => "No Robots Selected" ); # ZZZ
 	}
+	my $text = $d->fselect( title => "Select Your or Other Player Bots", path => "/sbbs/doors/crobots/robots/users/$UserName" );
+
 }
 
 sub BattleStats
