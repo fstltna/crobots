@@ -137,22 +137,18 @@ sub BattleArena
 		return;
 	}
 
-	$d->msgbox( title => "Your result was:", text => "$selectbot" ); # ZZZ
-
 	if (substr($selectbot, -2) ne ".r")
 	{
 		$d->msgbox( title => "Selected Robot:", text => "File is not a robot, aborting..." );
 		return;
 	}
 	# Does selection exist?
-	if (-f $selectbot)
-	{
-		# yes
-	}
-	else
+	if (! -f $selectbot)
 	{
 		# no
-	}
+		$d->msgbox( title => "Selected Robot:", text => "Robot must exist!" );
+		return;
+	} # ZZZ
 }
 
 sub BattleStats
