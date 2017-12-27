@@ -129,16 +129,30 @@ sub BattleArena
 	{
 		$d->msgbox( title => "You have selected these robots:", text => "No Robots Selected" );
 	}
-	my $text = $d->fselect( title => "Select Your or Other Player Bots", path => "/sbbs/doors/crobots/robots/users/$UserName" );
+	my $selectbot = $d->fselect( title => "Select Your or Other Player Bots", path => "/sbbs/doors/crobots/robots/users/$UserName" );
 
 	if ($d->state() ne "OK")
 	{
-		$d->msgbox( text => "No robot selected, aborting..." );
+		$d->msgbox( title => "Selected Robot:", text => "No robot selected, aborting..." );
 		return;
 	}
 
-	$d->msgbox( title => "Your result was:", text => "$text" ); # ZZZ
+	$d->msgbox( title => "Your result was:", text => "$selectbot" ); # ZZZ
 
+	if (substr($selectbot, -2) ne ".r")
+	{
+		$d->msgbox( title => "Selected Robot:", text => "File is not a robot, aborting..." );
+		return;
+	}
+	# Does selection exist?
+	if (-f $selectbot)
+	{
+		# yes
+	}
+	else
+	{
+		# no
+	}
 }
 
 sub BattleStats
