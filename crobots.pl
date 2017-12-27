@@ -65,6 +65,33 @@ sub MainMenu
 
 sub ManageBots
 {
+	my $selectbot = $d->fselect( title => "Select Your or Other Player Bots", path => "/sbbs/doors/crobots/robots/users/$UserName" );
+
+	if ($d->state() ne "OK")
+	{
+		$d->msgbox( title => "Selected Robot:", text => "No robot selected, aborting..." );
+		return;
+	}
+
+	if (substr($selectbot, -2) ne ".r")
+	{
+		$d->msgbox( title => "Selected Robot:", text => "File is not a robot, aborting..." );
+		return;
+	}
+
+	my $PathString = "/sbbs/doors/crobots/robots/users/$UserName";
+	if (substr($selectbot, 0, length($PathString)) ne $PathString) # ZZZ
+	{
+		$d->msgbox( title => "Selected Robot:", text => "Can only manage robots you own, aborting..." );
+		return;
+	}
+	# Does selection exist?
+	if (! -f $selectbot)
+	{
+		# no
+		$d->msgbox( title => "Selected Robot:", text => "Robot $selectbot will be created..." );
+		return;
+	} # ZZZ
 }
 
 sub DebugBot
@@ -142,6 +169,7 @@ sub BattleArena
 		$d->msgbox( title => "Selected Robot:", text => "File is not a robot, aborting..." );
 		return;
 	}
+
 	# Does selection exist?
 	if (! -f $selectbot)
 	{
