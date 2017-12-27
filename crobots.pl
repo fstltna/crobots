@@ -123,13 +123,21 @@ sub BattleArena
 	}
 	if ($AddedBots > 0)
 	{
-		$d->msgbox( title => "You have selected these robots:", text => "@ActiveRobots" ); # ZZZ
+		$d->msgbox( title => "You have selected these robots:", text => "@ActiveRobots" );
 	}
 	else
 	{
-		$d->msgbox( title => "You have selected these robots:", text => "No Robots Selected" ); # ZZZ
+		$d->msgbox( title => "You have selected these robots:", text => "No Robots Selected" );
 	}
 	my $text = $d->fselect( title => "Select Your or Other Player Bots", path => "/sbbs/doors/crobots/robots/users/$UserName" );
+
+	if ($d->state() ne "OK")
+	{
+		$d->msgbox( text => "No robot selected, aborting..." );
+		return;
+	}
+
+	$d->msgbox( title => "Your result was:", text => "$text" ); # ZZZ
 
 }
 
