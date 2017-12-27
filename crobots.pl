@@ -7,6 +7,7 @@ use Term::ReadKey;
 use Term::ANSIScreen qw(cls);
 
 my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
+my $FileEditor = "/bin/nano -R";
 
 ###################################################
 # No changes below here
@@ -65,7 +66,7 @@ sub MainMenu
 
 sub ManageBots
 {
-	my $selectbot = $d->fselect( title => "Select Your or Other Player Bots", path => "/sbbs/doors/crobots/robots/users/$UserName" );
+	my $selectbot = $d->fselect( title => "Select Your Bot To Manage", path => "/sbbs/doors/crobots/robots/users/$UserName" );
 
 	if ($d->state() ne "OK")
 	{
@@ -90,8 +91,8 @@ sub ManageBots
 	{
 		# no
 		$d->msgbox( title => "Selected Robot:", text => "Robot $selectbot will be created..." );
-		return;
 	} # ZZZ
+	system ("$FileEditor $selectbot");
 }
 
 sub DebugBot
