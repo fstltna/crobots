@@ -240,13 +240,13 @@ printf $output_fh <<"EOT";
 <html>
 <head>
 <title>CRobots Tournaments Status</title>
-<script src="sorttable.js"></script>
+<script src=\"https://amigacity.xyz/sorttable.js\"></script>
 <style>
 body {
     background-color: linen;
 }
 table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
-    content: " \25B4\25BE"
+    content: \" \\25B4\\25BE\"
 }
 </style>
 </head>
@@ -255,6 +255,7 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
 <br>
 <p align=center>There are currently $NumPlayers players and $NumBots robots in total.</p>
 <p align=center>This data was last updated at $now.</p>
+<center>
 <table class="sortable">
  <thead>
    <tr>
@@ -275,6 +276,6 @@ foreach my $sortkey (sort {$gamedate{$a} <=> $gamedate{$b}} keys %gamedate)
 	printf($output_fh
 "<tr><td>$player{$sortkey}</td><td>$botname{$sortkey}</td><td>$botversion{$sortkey}</td><td>$numwins{$sortkey}</td><td>$numbattles{$sortkey}</td><td>$formatdate</td></tr>\n");
 }
-printf($output_fh "</tbody>\n</table>\n</body>\n</html>");
+printf($output_fh "</tbody>\n</table>\n</center>\n</body>\n</html>");
 close($output_fh);
 exit 0;
