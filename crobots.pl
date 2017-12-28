@@ -75,7 +75,6 @@ sub GetBotVersion
 	my $SourceName = substr($SourceString, $SourcePos + 2);
 	$SourceName = substr($SourceName, 0, length($SourceName) - 3);
 	$BotVersion = $SourceName;
-	$d->msgbox( title => "ZZZ Testing in GetBotVersion", text => "BotVersion is '$BotVersion'" );
 }
 sub GetBotName
 {
@@ -84,7 +83,6 @@ sub GetBotName
 	my $SourceName = substr($SourceString, $SourcePos + 2);
 	$SourceName = substr($SourceName, 0, length($SourceName) - 3);
 	$RobotName = $SourceName;
-	$d->msgbox( title => "ZZZ Testing in GetBotName:", text => "RobotName is '$RobotName'" );
 }
 
 # Reads and parses header in robot file

@@ -5,6 +5,7 @@ use Storable;           # For loading & saving variables
 use Digest::MD5::File qw(dir_md5_hex file_md5_hex url_md5_hex);
 
 my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
+my $StatsHTMLFileOutput = "/var/www/html/stats.html";
 my $StatsDatabaseFile = "/sbbs/doors/crobots/data";
 my $MD5StatsDatabaseFile = "/sbbs/doors/crobots/md5.db";
 
@@ -214,7 +215,7 @@ foreach my $curkey (keys %player)
 
 # Now create output files
 (my $sec,my $min,my $hour,my $mday,my $mon,my $year,my $wday,my $yday,my $isdst) = localtime(time);
-my $now = sprintf("%02d-%02d-%04d %02d:%02d:%02d", $mon, $mday, $year+1900, $hour, $min, $sec);
+my $now = sprintf("%02d-%02d-%04d %02d:%02d:%02d", $mon+1, $mday, $year+1900, $hour, $min, $sec);
 
 open(my $output_fh, ">", $StatsFileOutput ) || die "Can't write to $StatsFileOutput: $!";
 printf $output_fh <<"EOT";
@@ -230,7 +231,50 @@ printf($output_fh "%-15s | %-15s | Vers | Wins | Battles | Game Date\n==========
 foreach my $sortkey (sort {$gamedate{$a} <=> $gamedate{$b}} keys %gamedate)
 {
 	my $formatdate = sprintf("%02d/%02d/%04d", substr($gamedate{$sortkey}, 4, 2), substr($gamedate{$sortkey}, 6, 2), substr($gamedate{$sortkey}, 0, 4));
-	printf($output_fh "%-15s | %-15s | %-4s | %-4s | %-7s | %s\n", $player{$sortkey}, $botname{$sortkey}, , $botversion{$sortkey}, $numwins{$sortkey}, , $numbattles{$sortkey}, $formatdate);
+	printf($output_fh "%-15s | %-15s | %-4s | %-4s | %-7s | %s\n", $player{$sortkey}, $botname{$sortkey}, $botversion{$sortkey}, $numwins{$sortkey}, $numbattles{$sortkey}, $formatdate);
 }
+close($output_fh);
+
+open(my $output_fh, ">", $StatsHTMLFileOutput ) || die "Can't write to $StatsHTMLFileOutput: $!";
+printf $output_fh <<"EOT";
+<html>
+<head>
+<title>CRobots Tournaments Status</title>
+<script src="sorttable.js"></script>
+<style>
+body {
+    background-color: linen;
+}
+table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+    content: " \25B4\25BE"
+}
+</style>
+</head>
+<body>
+<h1 align=center>Welcome to the CRobots competition server</h1>
+<br>
+<p align=center>There are currently $NumPlayers players and $NumBots robots in total.</p>
+<p align=center>This data was last updated at $now.</p>
+<table class="sortable">
+ <thead>
+   <tr>
+     <th>Player Name</th>
+     <th>Bot Name</th>
+     <th>Bot Version</th>
+     <th>Wins</th>
+     <th>Battles</th>
+     <th>Game Date</th>
+  </tr>
+ </thead>
+ <tbody>
+EOT
+
+foreach my $sortkey (sort {$gamedate{$a} <=> $gamedate{$b}} keys %gamedate)
+{
+	my $formatdate = sprintf("%02d/%02d/%04d", substr($gamedate{$sortkey}, 4, 2), substr($gamedate{$sortkey}, 6, 2), substr($gamedate{$sortkey}, 0, 4));
+	printf($output_fh
+"<tr><td>$player{$sortkey}</td><td>$botname{$sortkey}</td><td>$botversion{$sortkey}</td><td>$numwins{$sortkey}</td><td>$numbattles{$sortkey}</td><td>$formatdate</td></tr>\n");
+}
+printf($output_fh "</tbody>\n</table>\n</body>\n</html>");
 close($output_fh);
 exit 0;
