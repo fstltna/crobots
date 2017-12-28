@@ -239,7 +239,7 @@ sub BattleArena
 	# Execute the game
 	#system("$CrobotsExe $UserName \"$selectbot\"");
 	# Check results
-	if ($? == 0)
+	if ($? == 1)
 	{
 		# Command failed - no saving
 		$d->msgbox( title => "Game Progress:", text => "Game Aborted..." );
