@@ -170,8 +170,15 @@ while (readdir $dh)
 }
 closedir $dh;
 
+my $ForceBuild = "";
+if ($ARGV[0] eq "force")
+{
+	# Force rebuild
+	$ForceBuild = "force";
+}
+
 # Did we see any new games?
-if ($SawNew == 0)
+if (($SawNew == 0) && ($ForceBuild ne "force"))
 {
 	# Nope, so exit
 	exit 0;
