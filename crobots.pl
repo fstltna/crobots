@@ -27,7 +27,6 @@ if (!$UserName)
 	print "You must supply the username!\n";
 	exit 0;
 }
-my $PlayerBotName = "";
 
 # Create the users dir if non existing
 system("mkdir -p /sbbs/doors/crobots/robots/users/$UserName");
@@ -69,13 +68,23 @@ sub MainMenu
                                       '5', 'Battle Stats' ] );
 }
 
-sub RightPart
+sub GetBotVersion
 {
 	my $SourceString = shift;
 	my $SourcePos = rindex($SourceString, ':');
-	my $SourceName = substr($SourceString, $SourcePos + 1);
-	$d->msgbox( title => "ZZZ Testing:", text => "SourceName is $SourceName.." );
-	return($SourceName);
+	my $SourceName = substr($SourceString, $SourcePos + 2);
+	$SourceName = substr($SourceName, 0, length($SourceName) - 3);
+	$BotVersion = $SourceName;
+	$d->msgbox( title => "ZZZ Testing in GetBotVersion", text => "BotVersion is '$BotVersion'" );
+}
+sub GetBotName
+{
+	my $SourceString = shift;
+	my $SourcePos = rindex($SourceString, ':');
+	my $SourceName = substr($SourceString, $SourcePos + 2);
+	$SourceName = substr($SourceName, 0, length($SourceName) - 3);
+	$RobotName = $SourceName;
+	$d->msgbox( title => "ZZZ Testing in GetBotName:", text => "RobotName is '$RobotName'" );
 }
 
 # Reads and parses header in robot file
@@ -90,11 +99,11 @@ sub ReadBot
 		chop;
 		if (substr($_, 0, 11) eq "/* Version:")
 		{
-			$BotVersion = RightPart($_)
+			GetBotVersion($_)
 		}
 		elsif (substr($_, 0, 11) eq "/* BotName:")
 		{
-			$RobotName = RightPart($_)
+			GetBotName($_)
 		}
 	}
 	close(ROBOTFH);
@@ -112,7 +121,7 @@ sub ManageBots
 
 	if (substr($selectbot, -2) ne ".r")
 	{
-		$d->msgbox( title => "Selected Robot:", text => "File is not a robot, aborting..." );
+		$d->msgbox( title => "Selected Robot:", text => "File is not a robot, aborting... To create a bot end the name with \".r\"" );
 		return;
 	}
 
@@ -129,8 +138,6 @@ sub ManageBots
 		my $BotNamePos = rindex($selectbot, '/');
 		my $BotName = substr($selectbot, $BotNamePos + 1);
 		$d->msgbox( title => "Selected Robot:", text => "Robot \"$selectbot\" will be created..." );
-		system ("/bin/cp /sbbs/doors/crobots/RobotTemplate \"$selectbot\"");
-
 		open(MYFH, '>', $selectbot) or die $!;
 		print MYFH "/* Version: 1.0 */\n";
 		print MYFH "/* BotName: $BotName */\n";
@@ -231,7 +238,7 @@ sub BattleArena
 		$d->msgbox( title => "Selected Robot:", text => "Robot must exist!" );
 		return;
 	}
-	# Execute the game ZZZ
+	# Execute the game
 	#system("$CrobotsExe $UserName \"$selectbot\"");
 	# Check results
 	if ($? != 0)
@@ -240,11 +247,17 @@ sub BattleArena
 		$d->msgbox( title => "Game Progress:", text => "Game Aborted..." );
 		return;
 	}
+	if ($Record eq "false")
+	{
+		# Not saving results
+		$d->msgbox( title => "Game Progress:", text => "Game results not being saved..." );
+		return;
+	}
 	# Read In Bot Details
 	ReadBot($selectbot);
 	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 	$year += 1900;
-$d->msgbox( title => "Game Progress:", text => "Year is $year" );
+	$mon += 1;
 	my $TempOut = "$TempDir/crobots-$year-$mon-$mday-$hour-$min-$sec";
 	my $GameDate = sprintf("%04d%02d%02d", $year, $mon, $mday);
 	open(MYFH, '>', $TempOut) or die "Could not create file '$TempOut' $!";
