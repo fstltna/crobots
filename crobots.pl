@@ -239,11 +239,16 @@ sub BattleArena
 	# Execute the game
 	#system("$CrobotsExe $UserName \"$selectbot\"");
 	# Check results
-	if ($? != 0)
+	if ($? == 0)
 	{
 		# Command failed - no saving
 		$d->msgbox( title => "Game Progress:", text => "Game Aborted..." );
 		return;
+	}
+	my $DidWin = 1;
+	if ($? == 10)
+	{
+		$DidWin = 0;
 	}
 	if ($Record eq "false")
 	{
@@ -262,7 +267,7 @@ sub BattleArena
 	print MYFH "Player=$UserName
 BotName=$RobotName
 BotVersion=$BotVersion
-NumWins=1
+NumWins=$DidWin
 GameDate=$GameDate
 NumBattles=1\n";
 	close(MYFH);
