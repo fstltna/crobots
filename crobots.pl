@@ -8,6 +8,7 @@ use Term::ANSIScreen qw(cls);
 
 my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
 my $FileEditor = "/bin/nano -R";
+my $CrobotsExe = "/sbbs/doors/crobots/crobots -d";
 
 ###################################################
 # No changes below here
@@ -15,6 +16,7 @@ my $FileEditor = "/bin/nano -R";
 
 my $CR_ver = "1.0";
 my $Record = "false";	# Are results saved?
+my $TempDir = "/tmp";
 
 # Set UserName from command line
 my $UserName = $ARGV[0];
@@ -81,22 +83,24 @@ sub ManageBots
 	}
 
 	my $PathString = "/sbbs/doors/crobots/robots/users/$UserName";
-	if (substr($selectbot, 0, length($PathString)) ne $PathString) # ZZZ
+	if (substr($selectbot, 0, length($PathString)) ne $PathString)
 	{
 		$d->msgbox( title => "Selected Robot:", text => "Can only manage robots you own, aborting..." );
 		return;
 	}
 	# Does selection exist?
-	if (! -f $selectbot)
+	if (! -f "$selectbot")
 	{
 		# no
-		$d->msgbox( title => "Selected Robot:", text => "Robot $selectbot will be created..." );
+		$d->msgbox( title => "Selected Robot:", text => "Robot \"$selectbot\" will be created..." );
+		system ("/bin/cp /sbbs/doors/crobots/RobotTemplate \"$selectbot\"");
 	} # ZZZ
-	system ("$FileEditor $selectbot");
+	system ("$FileEditor \"$selectbot\"");
 }
 
 sub DebugBot
 {
+	$d->msgbox( title => "Not Done Yet", text => "This feature is not done yet..." );
 }
 
 sub BattleArena
@@ -172,12 +176,22 @@ sub BattleArena
 	}
 
 	# Does selection exist?
-	if (! -f $selectbot)
+	if (! -f "$selectbot")
 	{
 		# no
 		$d->msgbox( title => "Selected Robot:", text => "Robot must exist!" );
 		return;
-	} # ZZZ
+	}
+	# Execute the game
+	system("$CrobotsExe $UserName \"$selectbot\""); # ZZZ command
+	# Check results
+	if ($? != 0)
+	{
+		# Command failed - no saving
+		$d->msgbox( title => "Game Progress:", text => "Game Aborted..." );
+		return;
+	}
+	# ZZZ Needs processing
 }
 
 sub BattleStats

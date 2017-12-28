@@ -11,3 +11,4 @@ Steps to set up:
 	   same location
 	3) Create a cron job to run this however often you want to poll
 	   for new game data, maybe a couple times a day or less...
+	4) Copy RobotTemplate to /sbbs/doors/crobots
