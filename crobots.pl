@@ -17,6 +17,8 @@ my $CrobotsExe = "/sbbs/doors/crobots/crobots -d";
 my $CR_ver = "1.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
+my $RobotName = "";
+my $BotVersion = "";
 
 # Set UserName from command line
 my $UserName = $ARGV[0];
@@ -25,6 +27,7 @@ if (!$UserName)
 	print "You must supply the username!\n";
 	exit 0;
 }
+my $PlayerBotName = "";
 
 # Create the users dir if non existing
 system("mkdir -p /sbbs/doors/crobots/robots/users/$UserName");
@@ -66,6 +69,37 @@ sub MainMenu
                                       '5', 'Battle Stats' ] );
 }
 
+sub RightPart
+{
+	my $SourceString = shift;
+	my $SourcePos = rindex($SourceString, ':');
+	my $SourceName = substr($SourceString, $SourcePos + 1);
+	$d->msgbox( title => "ZZZ Testing:", text => "SourceName is $SourceName.." );
+	return($SourceName);
+}
+
+# Reads and parses header in robot file
+sub ReadBot
+{
+	my $RobotFile = shift;
+	$RobotName = "UnknownRobot";
+	$BotVersion = "???";
+	open(ROBOTFH, '<', $RobotFile) or die "Unable to read robot file $RobotFile: $!";
+	while(<ROBOTFH>)
+	{
+		chop;
+		if (substr($_, 0, 11) eq "/* Version:")
+		{
+			$BotVersion = RightPart($_)
+		}
+		elsif (substr($_, 0, 11) eq "/* BotName:")
+		{
+			$RobotName = RightPart($_)
+		}
+	}
+	close(ROBOTFH);
+}
+
 sub ManageBots
 {
 	my $selectbot = $d->fselect( title => "Select Your Bot To Manage", path => "/sbbs/doors/crobots/robots/users/$UserName" );
@@ -92,9 +126,17 @@ sub ManageBots
 	if (! -f "$selectbot")
 	{
 		# no
+		my $BotNamePos = rindex($selectbot, '/');
+		my $BotName = substr($selectbot, $BotNamePos + 1);
 		$d->msgbox( title => "Selected Robot:", text => "Robot \"$selectbot\" will be created..." );
 		system ("/bin/cp /sbbs/doors/crobots/RobotTemplate \"$selectbot\"");
-	} # ZZZ
+
+		open(MYFH, '>', $selectbot) or die $!;
+		print MYFH "/* Version: 1.0 */\n";
+		print MYFH "/* BotName: $BotName */\n";
+		print MYFH "/* Owner: $UserName */\n";
+		close(MYFH);
+	}
 	system ("$FileEditor \"$selectbot\"");
 }
 
@@ -175,6 +217,13 @@ sub BattleArena
 		return;
 	}
 
+	my $PathString = "/sbbs/doors/crobots/robots/users/$UserName";
+	if (substr($selectbot, 0, length($PathString)) ne $PathString)
+	{
+		$d->msgbox( title => "Selected Robot:", text => "Can only run robots you own, aborting..." );
+		return;
+	}
+
 	# Does selection exist?
 	if (! -f "$selectbot")
 	{
@@ -182,8 +231,8 @@ sub BattleArena
 		$d->msgbox( title => "Selected Robot:", text => "Robot must exist!" );
 		return;
 	}
-	# Execute the game
-	system("$CrobotsExe $UserName \"$selectbot\""); # ZZZ command
+	# Execute the game ZZZ
+	#system("$CrobotsExe $UserName \"$selectbot\"");
 	# Check results
 	if ($? != 0)
 	{
@@ -191,7 +240,21 @@ sub BattleArena
 		$d->msgbox( title => "Game Progress:", text => "Game Aborted..." );
 		return;
 	}
-	# ZZZ Needs processing
+	# Read In Bot Details
+	ReadBot($selectbot);
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+	$year += 1900;
+$d->msgbox( title => "Game Progress:", text => "Year is $year" );
+	my $TempOut = "$TempDir/crobots-$year-$mon-$mday-$hour-$min-$sec";
+	my $GameDate = sprintf("%04d%02d%02d", $year, $mon, $mday);
+	open(MYFH, '>', $TempOut) or die "Could not create file '$TempOut' $!";
+	print MYFH "Player=$UserName
+BotName=$RobotName
+BotVersion=$BotVersion
+NumWins=1
+GameDate=$GameDate
+NumBattles=1\n";
+	close(MYFH);
 }
 
 sub BattleStats
