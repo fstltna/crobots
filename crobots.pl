@@ -47,7 +47,8 @@ whose mission is to seek out, track, and destroy other robots,
 each running different programs.  Each robot is equally equipped,
 and up to four robots may compete at once.  CROBOTS is best
 played among several people, each refining their own robot
-program, then matching program against program.";
+program, then matching program against program. View stats at
+https://amigacity.xyz/stats.html";
 
 $d->msgbox( title => $windowtitle, text => $introtext );
 

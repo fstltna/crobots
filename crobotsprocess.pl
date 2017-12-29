@@ -240,6 +240,7 @@ foreach my $sortkey (sort {$gamedate{$a} <=> $gamedate{$b}} keys %gamedate)
 	my $formatdate = sprintf("%02d/%02d/%04d", substr($gamedate{$sortkey}, 4, 2), substr($gamedate{$sortkey}, 6, 2), substr($gamedate{$sortkey}, 0, 4));
 	printf($output_fh "%-15s | %-15s | %-4s | %-4s | %-7s | %s\n", $player{$sortkey}, $botname{$sortkey}, $botversion{$sortkey}, $numwins{$sortkey}, $numbattles{$sortkey}, $formatdate);
 }
+printf($output_fh "\nFor more information on this game go to https://synchronetbbs.org/index.php/forum/crobots\n");
 close($output_fh);
 
 open(my $output_fh, ">", $StatsHTMLFileOutput ) || die "Can't write to $StatsHTMLFileOutput: $!";
@@ -283,6 +284,6 @@ foreach my $sortkey (sort {$gamedate{$a} <=> $gamedate{$b}} keys %gamedate)
 	printf($output_fh
 "<tr><td>$player{$sortkey}</td><td>$botname{$sortkey}</td><td>$botversion{$sortkey}</td><td>$numwins{$sortkey}</td><td>$numbattles{$sortkey}</td><td>$formatdate</td></tr>\n");
 }
-printf($output_fh "</tbody>\n</table>\n</center>\n</body>\n</html>");
+printf($output_fh "</tbody>\n</table>\n</center>\n<br>\n<p align=center>For more information on this game or to get it<br>for your BBS please visit <a href=\"https://synchronetbbs.org/index.php/forum/crobots\">https://synchronetbbs.org/index.php/forum/crobots</a></p>\n</body>\n</html>");
 close($output_fh);
 exit 0;
