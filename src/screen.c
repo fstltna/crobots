@@ -14,6 +14,7 @@
 
 #include "crobots.h"
 #include <curses.h>
+#include <time.h>
 
 #ifdef UNIX  /* anche se e' ovvio...*/
 int LINEE=21;
@@ -64,6 +65,14 @@ static int col_1;    /* column for damage & speed */
 static int col_2;    /* column for scan & heading */
 static int col_3;    /* column for cpu cycle count*/
 
+void PauseFunc()
+{
+	struct timespec tim, tim2;
+
+	tim.tv_sec = 0;
+	tim.tv_nsec = 100000000L;
+	nanosleep(&tim, &tim2);
+}
 
 /* init_disp - initialize display */
 
@@ -88,6 +97,7 @@ void end_disp()
   echo();
   nl();
   refresh();
+  PauseFunc();
   endwin();
 }
 
@@ -163,6 +173,7 @@ void draw_field()
   col_3 = COLS - STAT_WID + 11;
 
   refresh();
+  PauseFunc();
   
 }
 
@@ -203,6 +214,7 @@ int n;
       move(new_y,new_x);
       addch(n+'1');  /* ASCII dependent */
       refresh();
+      PauseFunc();
       robots[n].last_x = new_x;
       robots[n].last_y = new_y;
     }
@@ -250,6 +262,7 @@ int n;
       move(new_y,new_x);
       addch(SHELL);
       refresh();
+      PauseFunc();
       missiles[r][n].last_xx = new_x;
       missiles[r][n].last_yy = new_y;
     }
@@ -326,6 +339,7 @@ int n;
     }
   }
   refresh();
+  PauseFunc();
 }
 
 
@@ -369,7 +383,10 @@ int n;
   printw("%3d ",cur_robot->ip->u.var1);
    */
   if (changed)
+  {
     refresh();
+    PauseFunc();
+  }
 }
 
 
@@ -382,5 +399,6 @@ long l;
   move(LINEE-1,col_3);
   printw("%7ld",l);
   refresh();
+  PauseFunc();
 }
 
