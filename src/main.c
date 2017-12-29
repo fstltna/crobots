@@ -243,6 +243,7 @@ int n;
     /* check r_flag for compile errors */
     if (r_flag) {
       fprintf(stdout,"\n%s could not compile\n\n",f[i]);
+      ReturnCode = 1;
     } else {
       fprintf(stdout,"\n%s compiled without errors\n\n",f[i]);
 	  strcpy(outfile,f[i]);
