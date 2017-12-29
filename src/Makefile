@@ -37,7 +37,7 @@ grammar.o: 	crobots.h compiler.h grammar.y
 		gcc $(CFLAGS) -c grammar.c
 
 lexanal.o: 	crobots.h compiler.h lexanal.l grammar.y
-		lex lexanal.l
+		flex lexanal.l
 		#egrep -v '# ifdef|# endif' lex.yy.c >lexanal.c
 		#rm lex.yy.c
 		mv lex.yy.c lexanal.c
