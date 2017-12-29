@@ -112,6 +112,8 @@ sub ManageBots
 {
 	my $selectbot = $d->fselect( title => "Select Your Bot To Manage", path => "/sbbs/doors/crobots/robots/users/$UserName" );
 	$selectbot =~ s/\s+/_/g;
+	$selectbot =~ s/</_/g;
+	$selectbot =~ s/>/_/g;
 
 	if ($d->state() ne "OK")
 	{
@@ -151,6 +153,8 @@ sub DebugBot
 {
 	my $selectbot = $d->fselect( title => "Select Your Bot To Debug", path => "/sbbs/doors/crobots/robots/users/$UserName" );
 	$selectbot =~ s/\s+/_/g;
+	$selectbot =~ s/</_/g;
+	$selectbot =~ s/>/_/g;
 
 	if ($d->state() ne "OK")
 	{
@@ -252,6 +256,8 @@ sub BattleArena
 	{
 		my $selectbot = $d->fselect( title => "Select Your or Other Player Bots:", path => "/sbbs/doors/crobots/robots/users/$UserName" );
 		$selectbot =~ s/\s+/_/g;
+		$selectbot =~ s/</_/g;
+		$selectbot =~ s/>/_/g;
 		if ($d->state() ne "OK")
 		{
 			$d->msgbox( title => "Selected Robot:", text => "No robot selected..." );
@@ -282,6 +288,8 @@ sub BattleArena
 	}
 	my $selectbot = $d->fselect( title => "Select Your Bot To Be Ranked:", path => "/sbbs/doors/crobots/robots/users/$UserName" );
 	$selectbot =~ s/\s+/_/g;
+	$selectbot =~ s/</_/g;
+	$selectbot =~ s/>/_/g;
 	if ($d->state() ne "OK")
 	{
 		$d->msgbox( title => "Selected Robot:", text => "No robot selected, aborting..." );
