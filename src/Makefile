@@ -50,3 +50,7 @@ debug.o:	debug.c crobots.h tokens.h
 	
 clean:
 		rm -f $(OBJS) crobots
+
+install:	crobots ../crobots.pl ../crobotsprocess.pl
+		cp crobots ../crobots.pl ../crobotsprocess.pl /sbbs/doors/crobots
+
