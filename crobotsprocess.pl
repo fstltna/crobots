@@ -6,6 +6,7 @@ use Digest::MD5::File qw(dir_md5_hex file_md5_hex url_md5_hex);
 
 my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
 my $StatsHTMLFileOutput = "/var/www/html/stats.html";
+my $StatsHTMLURL = "https://amigacity.xyz/stats.html";
 my $StatsDatabaseFile = "/sbbs/doors/crobots/data";
 my $MD5StatsDatabaseFile = "/sbbs/doors/crobots/md5.db";
 
@@ -240,7 +241,8 @@ foreach my $sortkey (sort {$gamedate{$a} <=> $gamedate{$b}} keys %gamedate)
 	my $formatdate = sprintf("%02d/%02d/%04d", substr($gamedate{$sortkey}, 4, 2), substr($gamedate{$sortkey}, 6, 2), substr($gamedate{$sortkey}, 0, 4));
 	printf($output_fh "%-15s | %-15s | %-4s | %-4s | %-7s | %s\n", $player{$sortkey}, $botname{$sortkey}, $botversion{$sortkey}, $numwins{$sortkey}, $numbattles{$sortkey}, $formatdate);
 }
-printf($output_fh "\nFor more information on this game go to https://synchronetbbs.org/index.php/forum/crobots\n");
+printf($output_fh "\nHTML version of this page available at: $StatsHTMLURL\n");
+printf($output_fh "For more information on this game go to https://synchronetbbs.org/index.php/forum/crobots\n");
 close($output_fh);
 
 open(my $output_fh, ">", $StatsHTMLFileOutput ) || die "Can't write to $StatsHTMLFileOutput: $!";
