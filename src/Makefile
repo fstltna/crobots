@@ -1,6 +1,8 @@
 CFLAGS = -O4 -march=native -mtune=native
 CFLAGS += -Dlinux -DUNIX
 LIBS = -lm -lcurses
+GAMEOWNER = ftn
+
 # Linux gcc flags: optimize(O) separate text and data(i)
 # Sembra che linkare -ltermcap sia inutile
 
@@ -52,5 +54,9 @@ clean:
 		rm -f $(OBJS) crobots
 
 install:	crobots ../crobots.pl ../crobotsprocess.pl
+		mkdir -p /sbbs/doors/crobots/robots/builtin
+		mkdir -p /sbbs/doors/crobots/robots/users
 		cp crobots ../crobots.pl ../crobotsprocess.pl /sbbs/doors/crobots
+		cp *.r /sbbs/doors/crobots/robots/builtin
+		chown -R $(GAMEOWNER):$(GAMEOWNER) /sbbs/doors/crobots
 
