@@ -172,6 +172,7 @@ sub BattleArena
                                );
 
 	my @ActiveRobots = ();
+	my @ActiveRobotsFull = ();
 	my $AddedBots = 0;
 	foreach my $CurBot (@selection1)
 	{
@@ -180,55 +181,88 @@ sub BattleArena
 			if ($CurBot == 1)
 			{
 				push (@ActiveRobots, "counter.r");
+				push (@ActiveRobotsFull, "/sbbs/doors/crobots/robots/builtin/counter.r");
 			}
 			elsif ($CurBot == 2)
 			{
 				push (@ActiveRobots, "rabbit.r");
+				push (@ActiveRobotsFull, "/sbbs/doors/crobots/robots/builtin/rabbit.r");
 			}
 			elsif ($CurBot == 3)
 			{
 				push (@ActiveRobots, "rook.r");
+				push (@ActiveRobotsFull, "/sbbs/doors/crobots/robots/builtin/rook.r");
 			}
 			elsif ($CurBot == 4)
 			{
 				push (@ActiveRobots, "sniper.r");
+				push (@ActiveRobotsFull, "/sbbs/doors/crobots/robots/builtin/sniper.r");
 			}
 			elsif ($CurBot == 5)
 			{
 				push (@ActiveRobots, "target.r");
+				push (@ActiveRobotsFull, "/sbbs/doors/crobots/robots/builtin/target.r");
 			}
 			$AddedBots++;
 		}
 	}
 	if ($AddedBots > 0)
 	{
-		$d->msgbox( title => "You have selected these robots:", text => "@ActiveRobots" );
+		$d->msgbox( title => "You have selected these training robots:", text => "@ActiveRobots" );
 	}
 	else
 	{
-		$d->msgbox( title => "You have selected these robots:", text => "No Robots Selected" );
+		$d->msgbox( title => "You have selected these training robots:", text => "No Robots Selected" );
 	}
-	my $selectbot = $d->fselect( title => "Select Your or Other Player Bots", path => "/sbbs/doors/crobots/robots/users/$UserName" );
-
+	my $NotAbort = -1;
+	while (($AddedBots < 3) && $NotAbort)
+	{
+		my $selectbot = $d->fselect( title => "Select Your or Other Player Bots:", path => "/sbbs/doors/crobots/robots/users/$UserName" );
+		if ($d->state() ne "OK")
+		{
+			$d->msgbox( title => "Selected Robot:", text => "No robot selected..." );
+			$NotAbort = 0;
+		}
+		else
+		{
+			if (substr($selectbot, -2) ne ".r")
+			{
+				$d->msgbox( title => "Selected Robot:", text => "File is not a robot..." );
+				return;
+			}
+			else
+			{
+				# Does selection exist?
+				if (! -f "$selectbot")
+				{
+					# no
+					$d->msgbox( title => "Selected Robot:", text => "Robot must exist!" );
+				}
+				else
+				{
+					$AddedBots++;
+					push (@ActiveRobotsFull, $selectbot);
+				}
+			}
+		}
+	}
+	my $selectbot = $d->fselect( title => "Select Your Bot To Be Ranked:", path => "/sbbs/doors/crobots/robots/users/$UserName" );
 	if ($d->state() ne "OK")
 	{
 		$d->msgbox( title => "Selected Robot:", text => "No robot selected, aborting..." );
 		return;
 	}
-
 	if (substr($selectbot, -2) ne ".r")
 	{
 		$d->msgbox( title => "Selected Robot:", text => "File is not a robot, aborting..." );
 		return;
 	}
-
 	my $PathString = "/sbbs/doors/crobots/robots/users/$UserName";
 	if (substr($selectbot, 0, length($PathString)) ne $PathString)
 	{
-		$d->msgbox( title => "Selected Robot:", text => "Can only run robots you own, aborting..." );
+		$d->msgbox( title => "Selected Robot:", text => "Can only rank robots you own, aborting..." );
 		return;
 	}
-
 	# Does selection exist?
 	if (! -f "$selectbot")
 	{
@@ -237,7 +271,13 @@ sub BattleArena
 		return;
 	}
 	# Execute the game
-	#system("$CrobotsExe $UserName \"$selectbot\"");
+	my $GameCommand = "$CrobotsExe $UserName \"$selectbot\"";
+	foreach my $curbot (@ActiveRobotsFull)
+	{
+		$GameCommand = sprintf("%s \"%s\"", $GameCommand, $curbot);
+	}
+$d->msgbox( title => "Game Command:", text => "$GameCommand" );
+	#system($GameCommand);
 	# Check results
 	if ($? == 1)
 	{
