@@ -8,7 +8,7 @@ use Term::ANSIScreen qw(cls);
 
 my $StatsFileOutput = "/sbbs/doors/crobots/stats.txt";
 my $FileEditor = "/bin/nano -R";
-my $CrobotsExe = "/sbbs/doors/crobots/crobots -d";
+my $CrobotsExe = "/sbbs/doors/crobots/crobots";
 
 ###################################################
 # No changes below here
@@ -164,7 +164,7 @@ sub DebugBot
 	my $PathString = "/sbbs/doors/crobots/robots/users/$UserName";
 	if (substr($selectbot, 0, length($PathString)) ne $PathString)
 	{
-		$d->msgbox( title => "Selected Robot:", text => "Can only manage robots you own, aborting..." );
+		$d->msgbox( title => "Selected Robot:", text => "Can only debug robots you own, aborting..." );
 		return;
 	}
 	# Does selection exist?
@@ -174,7 +174,10 @@ sub DebugBot
 		$d->msgbox( title => "Selected Robot:", text => "Robot must exist, aborting..." );
 		return;
 	}
-	$d->msgbox( title => "Not Done Yet", text => "This feature is not done yet..." );
+	# Debug the bot
+	my $GameCommand = "$CrobotsExe -d \"$selectbot\"";
+	system($GameCommand);
+	$d->msgbox( title => "Debug Completed", text => "Completed debugging this bot..." );
 }
 
 sub BattleArena
@@ -298,13 +301,12 @@ sub BattleArena
 		return;
 	}
 	# Execute the game
-	my $GameCommand = "$CrobotsExe $UserName \"$selectbot\"";
+	my $GameCommand = "$CrobotsExe \"$selectbot\"";
 	foreach my $curbot (@ActiveRobotsFull)
 	{
 		$GameCommand = sprintf("%s \"%s\"", $GameCommand, $curbot);
 	}
-$d->msgbox( title => "Game Command:", text => "$GameCommand" );
-	#system($GameCommand);
+	system($GameCommand);
 	# Check results
 	if ($? == 1)
 	{
@@ -313,7 +315,7 @@ $d->msgbox( title => "Game Command:", text => "$GameCommand" );
 		return;
 	}
 	my $DidWin = 1;
-	if ($? == 10)
+	if (($? == 10) || ($? == 11))
 	{
 		$DidWin = 0;
 	}

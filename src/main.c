@@ -68,6 +68,9 @@ char *argv[];
   void srand();
   int displayhelp=0;
 
+  /* Init return code */
+  ReturnCode = 0;
+
   /* init robots */
   for (i = 0; i < MAXROBOTS; i++) {
     init_robot(i);
@@ -206,7 +209,7 @@ char *argv[];
 
   /* all done */
   } 
-  exit(0);
+  exit(ReturnCode);
 
 }
 
@@ -402,9 +405,18 @@ int n;
 
   if (k == 0) {
     fprintf(stdout,"\r\nIt's a draw\r\n");
+    ReturnCode = 10;
+  }
+  else if ((k == 1) && (i == 0))
+  {
+    ReturnCode = 0;
+  }
+  else if ((k == 1) && (i != 0))
+  {
+    ReturnCode = 11;
   }
 
-  exit(0);
+  exit(ReturnCode);
 
 }
 

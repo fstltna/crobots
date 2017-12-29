@@ -148,6 +148,7 @@ extern
 #endif
 int r_debug,			/* debug switch */
     ndebug,
+    ReturnCode,
     r_flag;			/* global flag for push/pop errors */
 
 /* instruction types */
