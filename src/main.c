@@ -42,7 +42,7 @@ extern unsigned _stklen = 8000U;
 FILE *f_in;
 FILE *f_out;
 
-char *version   = "CROBOTS - version 1.1, PatchLevel3.1\n";
+char *version   = "CROBOTS - version 1.1, PatchLevel3.2\n";
 char *copyright = "Copyright 1985-2007 by Tom Poindexter, All rights reserved.\n";
 int garbage=0;
 
@@ -66,6 +66,7 @@ char *argv[];
   long atol();
   long time();
   void srand();
+  int displayhelp=0;
 
   /* init robots */
   for (i = 0; i < MAXROBOTS; i++) {
@@ -89,6 +90,9 @@ char *argv[];
 
       switch (argv[i][1]) {
 
+	case 'h':
+	  displayhelp=1;
+	  break;
 	/* limit number of cycles in a match */
 	case 'l':
 	case 'L':
@@ -159,6 +163,15 @@ char *argv[];
     fprintf(stderr,"%s",version);
     fprintf(stderr,"%s",copyright);
     fprintf(stderr,"\n");
+    if (displayhelp)
+    {
+        fprintf(stderr,"Command Options:\n");
+        fprintf(stderr,"\t-l|-L - Limit Number of Cycles in Match\n");
+        fprintf(stderr,"\t-m|-M - Run Multiple Matches\n");
+        fprintf(stderr,"\t-c|-C - Compile Only Flag\n");
+        fprintf(stderr,"\t-d|-D - Debug One Robot\n");
+        fprintf(stderr,"\t-s|-S - Full Debug\n");
+    }
   }
 
   /* make sure there is at least one robot at this point */
