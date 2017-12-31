@@ -414,7 +414,7 @@ int n;
   }
   else if ((k == 1) && (i != 0))
   {
-    ReturnCode = 11;
+    ReturnCode = 10 + i;
   }
 
   exit(ReturnCode);
