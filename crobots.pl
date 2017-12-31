@@ -328,7 +328,7 @@ sub BattleArena
 		return;
 	}
 	my $DidWin = 1;
-	if (($? == 10) || ($? == 11))
+	if ($? > 9)
 	{
 		$DidWin = 0;
 	}
