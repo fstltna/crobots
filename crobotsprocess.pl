@@ -250,7 +250,7 @@ printf $output_fh <<"EOT";
 <html>
 <head>
 <title>CRobots Tournaments Status</title>
-<script src=\"https://amigacity.xyz/sorttable.js\"></script>
+<script src=\"https://synchronetbbs.org/sorttable.js\"></script>
 <style>
 body {
     background-color: linen;
