@@ -42,8 +42,8 @@ extern unsigned _stklen = 8000U;
 FILE *f_in;
 FILE *f_out;
 
-char *version   = "CROBOTS - version 1.1, PatchLevel3.2\n";
-char *copyright = "Copyright 1985-2007 by Tom Poindexter, All rights reserved.\n";
+char *version   = "CROBOTS - version 1.1, PatchLevel3.2\nDoor Version 1.1\n";
+char *copyright = "Copyright 1985-2007 by Tom Poindexter, All rights reserved.\nCopyright 2018 by Marisa Giancarla (BBS Door Version https://SynchronetBBS.org)";
 int garbage=0;
 
 char *nuxx="main";
@@ -291,6 +291,16 @@ int n;
   r_debug = 0;  /* turns off full compile info */
 
   for (i = 0; i < n; i++) {
+
+    /* Only show compile of first robot */
+    if (i == 0)
+    {
+	f_out = stdout;
+    }
+    else
+    {
+	f_out = fopen("/dev/null","w");
+    }
  
     /* compile the robot */
     r_flag = 0;
