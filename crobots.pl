@@ -66,7 +66,8 @@ sub MainMenu
                                       '2', 'Debug Your Bots',
                                       '3', 'Battle Arena',
                                       '4', 'Test Bench',
-                                      '5', 'Battle Stats' ] );
+                                      '5', 'Battle Stats',
+                                      'q', 'Quit' ] );
 }
 
 sub GetBotVersion
@@ -393,7 +394,7 @@ sub BattleStats
 while (-1)
 {
 	MainMenu();
-	if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq ""))
+	if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "q") || ($menuselection eq ""))
 	{
 		$d->msgbox( title => $enjoyedtitle, text => "Thanks for playing..." );
 		exit 0;
